@@ -13,7 +13,10 @@ I will also try to texture these objects.
 Here are come very very poor sketches of a few examples.
 
 To build:
-![Alt text](https://raw.github.com/skooter500/BGE/master/Logo/BGE_Logo_01.png)
+![Alt text](https://raw.githubusercontent.com/LeeKeogh/BGE/Assignment/Logo/1.jpg)
+![Alt text](https://raw.githubusercontent.com/LeeKeogh/BGE/Assignment/Logo/2.jpg)
+![Alt text](https://raw.githubusercontent.com/LeeKeogh/BGE/Assignment/Logo/3.jpg)
+![Alt text](https://raw.githubusercontent.com/LeeKeogh/BGE/Assignment/Logo/4.jpg)
 * Download the dependencies from here: http://1drv.ms/1olPefQ
 * Unzip to the folder Dependencies in your project 
 * Use the included Visual Studio 2013 project files
