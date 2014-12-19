@@ -2,58 +2,52 @@
 #include "PhysicsController.h"
 #include "Sphere.h"
 #include "PhysicsCamera.h"
+
+#include "EmptyGame.h"
+#include "PhysicsFactory.h"
+#include "Game.h"
+#include "Sphere.h"
 #include "Box.h"
 #include "Cylinder.h"
-#include "Steerable3DController.h"
 #include "Ground.h"
 #include "Content.h"
-#include <btBulletDynamicsCommon.h>
-#include <gtc/quaternion.hpp>
-#include <gtx/quaternion.hpp>
-#include <gtx/euler_angles.hpp>
-#include <gtx/norm.hpp>
-#include "VectorDrawer.h"
+#include "PhysicsCamera.h"
+#include "Model.h"
+#include "dirent.h"
 #include "Utils.h"
-
+#include "Capsule.h"
 using namespace BGE;
 
-assignment::assignment(void)
+
+
+
+assignment::assignment()
 {
 }
 
-assignment::~assignment(void)
+
+assignment::~assignment()
 {
 }
 
-//shared_ptr<PhysicsController> cyl;
-//std::shared_ptr<GameComponent> station;
-
-bool assignment::Initialise()
+bool BGE::assignment::Initialise()
 {
-	physicsFactory->CreateGroundPhysics();
-	physicsFactory->CreateCameraPhysics();
-
-	setGravity(glm::vec3(0, -9, 0));
-
-	shared_ptr<PhysicsController> box1[5][5][5];
 	
-	int i, j,z;
-	for (i = 0; i < 5; i++)
-	{
-		for (j =0 ; j < 5; j++)
-		{
-			for (z = 0; z < 5; z++)
-			box1[i][j][z]=physicsFactory->CreateBox(5, 5, 5, glm::vec3(5*i, 5*j, 5*z), glm::quat());
-		}
-	}
+	dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
-	if (!Game::Initialise()) {
-		return false;
-	}
+	physicsFactory->CreateCameraPhysics();
+	physicsFactory->CreateGroundPhysics();
+	Update();
+	physicsFactory->CreateAnimat(glm::vec3(5, 10, 10));
+//	for (int i = 0; i < 1000; i += 200)
+//	{
+//		for (int j = 0; j < 1000; j += 200){
+//			physicsFactory->CreateTree(glm::vec3(i, 0, j));
+//		}
+//	}
 
-
-
-	return true;
+	
+	return Game::Initialise();
 }
 
 void BGE::assignment::Update()
@@ -62,7 +56,3 @@ void BGE::assignment::Update()
 	Game::Update();
 }
 
-void BGE::assignment::Cleanup()
-{
-	Game::Cleanup();
-}

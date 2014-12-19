@@ -116,7 +116,7 @@ void SceneGraphGame::CreateScene()
 	rp.y = 20;
 	physicsFactory->CreateCapsuleRagdoll(rp);
 
-	physicsFactory->CreateFromModel("monkey", NextPosition(current++, componentCount), glm::quat(), glm::vec3(5, 5, 5));
+	physicsFactory->CreateFromModel("mushroom", NextPosition(current++, componentCount), glm::quat(), glm::vec3(.01,.01,.01));
 
 	//// Create a physics car
 	physicsFactory->CreateVehicle(NextPosition(current++, componentCount));

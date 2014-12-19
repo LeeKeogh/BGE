@@ -1,6 +1,7 @@
 #include "PhysicsFactory.h"
 #include "Game.h"
 #include "Sphere.h"
+#include "FountainEffect.h"
 #include "Box.h"
 #include "Cylinder.h"
 #include "Ground.h"
@@ -10,6 +11,12 @@
 #include "dirent.h"
 #include "Utils.h"
 #include "Capsule.h"
+#include "Buddha.h"
+#include "Content.h"
+#include "VectorDrawer.h"
+#include "LazerBeam.h"
+#include "FountainEffect.h"
+#include "Utils.h"
 using namespace BGE;
 
 const float standardMass = 10.0f;
@@ -213,6 +220,142 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateCameraPhysics()
 	return physicsCamera;
 }
 
+shared_ptr<PhysicsController> PhysicsFactory::CreateTree(glm::vec3 position)
+{
+
+	shared_ptr<PhysicsController> stump = CreateBox(1, 1, 1, glm::vec3(position), glm::quat());
+	stump->transform->diffuse = glm::vec3(0.4, 0.0, 0.0);
+	shared_ptr<PhysicsController> lowertree = CreateBox(6, 2, 6, glm::vec3(position.x,position.y+1,position.z), glm::quat());
+	lowertree->transform->diffuse = glm::vec3(0.0, 1.0, 0.0);
+	shared_ptr<PhysicsController> lowertree2 = CreateBox(5, 2, 5, glm::vec3(position.x, position.y + 3, position.z), glm::quat());
+	lowertree2->transform->diffuse = glm::vec3(0.0, 1.0, 0.0);
+	shared_ptr<PhysicsController> midtree = CreateBox(4, 2, 4, glm::vec3(position.x, position.y + 5, position.z), glm::quat());
+	midtree->transform->diffuse = glm::vec3(0.0, 1.0, 0.0);
+	shared_ptr<PhysicsController> midtree2 = CreateBox(3, 2, 3, glm::vec3(position.x, position.y + 7, position.z), glm::quat());
+	midtree2->transform->diffuse = glm::vec3(0.0, 1.0, 0.0);
+	shared_ptr<PhysicsController> toptree = CreateBox(2, 2, 2, glm::vec3(position.x, position.y + 9, position.z), glm::quat());
+	toptree->transform->diffuse = glm::vec3(0.0, 1.0, 0.0);
+	shared_ptr<PhysicsController> toptree2 = CreateBox(1, 2, 1, glm::vec3(position.x, position.y + 11, position.z), glm::quat());
+	toptree2->transform->diffuse = glm::vec3(0.0, 1.0, 0.0);
+
+	return stump;
+}
+
+
+
+
+shared_ptr<PhysicsController> PhysicsFactory::CreateAnimat(glm::vec3 position)
+{
+
+	float width = 18;
+	float height = 2;
+	float length = 1;
+	float wheelWidth = 3;
+	float wheelRadius = 5;
+	float wheelOffset = 3.0f;
+	
+	//shared_ptr<PhysicsController> chassis = physicsFactory->CreateBox(width, height, length, position, glm::quat());
+
+	shared_ptr<PhysicsController> chassis2 = CreateBox(width, height, length, glm::vec3(position.x-10, position.y, position.z-4), glm::quat());
+	chassis2->transform->diffuse = glm::vec3(1.0, 0.0, 0.0);
+	shared_ptr<PhysicsController> chassis3 = CreateBox(18, 4, 6, glm::vec3(position.x, position.y+3, position.z + 2), glm::quat());
+	chassis3->transform->diffuse = glm::vec3(1.0, 0.0, 0.0);
+	shared_ptr<PhysicsController> chassis4 = CreateBox(1, 8, 1, glm::vec3(position.x, position.y + 10, position.z + 2), glm::quat());
+	chassis4->transform->diffuse = glm::vec3(1.0, 0.0, 0.0);
+	shared_ptr<PhysicsController> chassis5 = CreateBox(1, 8, 1, glm::vec3(position.x, position.y + 5, position.z + 4), glm::quat());
+	chassis5->transform->diffuse = glm::vec3(1.0, 0.0, 0.0);
+
+	shared_ptr<PhysicsController> beam = CreateBox(30, 1, 1, glm::vec3(position.x, position.y + 15, position.z + 2), glm::quat());
+	beam->transform->diffuse = glm::vec3(0.2, 0.2, 0.8);
+	shared_ptr<PhysicsController> beam2 = CreateBox(1, 10, 1, glm::vec3(position.x-15, position.y + 10, position.z + 6), glm::quat());
+	beam2->transform->diffuse = glm::vec3(0.2, 0.2, 0.8);
+	shared_ptr<PhysicsController> beam3 = CreateBox(1, 5, 1, glm::vec3(position.x+2, position.y + 6, position.z + 4), glm::quat());
+	beam3->transform->diffuse = glm::vec3(0.2, 0.2, 0.8);
+	shared_ptr<PhysicsController> wheel;
+	shared_ptr<PhysicsController> wheel2;
+	shared_ptr<PhysicsController> wheel3;
+	glm::quat q = glm::angleAxis(glm::half_pi<float>(), glm::vec3(1, 0, 0));
+
+	glm::vec3 offset;
+	btHingeConstraint * hinge;
+
+	
+	wheel = CreateCylinder(wheelRadius, wheelWidth, glm::vec3(position.x-15, position.y, position.z-3), q);
+	wheel->transform->diffuse = glm::vec3(0.8, 0.0, 0.4);
+	
+
+	offset = glm::vec3(-(width / 2 - 2), 0, +(length / 2 + wheelOffset));
+	hinge = new btHingeConstraint(*chassis2->rigidBody, *wheel->rigidBody, GLToBtVector(offset), btVector3(0, 0, 0), btVector3(0, 0, 1), btVector3(0, 1, 0), true);
+	dynamicsWorld->addConstraint(hinge);
+
+	
+	btTransform t1, t2;
+	t1.setIdentity();
+	t2.setIdentity();
+	t1.setOrigin(btVector3(14, 0, 4));
+	t2.setOrigin(btVector3(2, 0, 0));
+	btFixedConstraint * fixed = new btFixedConstraint(*chassis2->rigidBody, *chassis3->rigidBody, t1, t2);
+	dynamicsWorld->addConstraint(fixed);
+
+	offset = glm::vec3(+(width / 2 - 2), 0, +(length / 2 + wheelOffset + 3));
+	wheel2 = CreateCylinder(6, 5, glm::vec3(position.x+7, position.y-2, position.z+13), q);
+	wheel2->transform->diffuse = glm::vec3(0.8, 0.0, 0.4);
+	hinge = new btHingeConstraint(*chassis3->rigidBody, *wheel2->rigidBody, GLToBtVector(offset), btVector3(0, 0, 0), btVector3(0, 0, 1), btVector3(0, 1, 0), true);
+	dynamicsWorld->addConstraint(hinge);
+
+	offset = glm::vec3(+(width / 2 - 2), 0, -(length / 2 + wheelOffset + 3));
+	wheel2 = CreateCylinder(6, 5, glm::vec3(position.x + 7, position.y, position.z - 11), q);
+	wheel2->transform->diffuse = glm::vec3(0.8, 0.0, 0.4);
+	hinge = new btHingeConstraint(*chassis3->rigidBody, *wheel2->rigidBody, GLToBtVector(offset), btVector3(0, 0, 0), btVector3(0, 0, 1), btVector3(0, 1, 0), true);
+	dynamicsWorld->addConstraint(hinge);
+	
+	btTransform t3, t4;
+	t3.setIdentity();
+	t4.setIdentity();
+	t3.setOrigin(btVector3(0, 1, 1));
+	t4.setOrigin(btVector3(7, -5.2, 0));
+	btFixedConstraint * fixed2 = new btFixedConstraint(*chassis3->rigidBody, *chassis4->rigidBody, t3, t4);
+	dynamicsWorld->addConstraint(fixed2);
+	
+	offset = glm::vec3(-3, 4, 2);
+	hinge = new btHingeConstraint(*chassis4->rigidBody, *beam->rigidBody, GLToBtVector(offset), btVector3(0, 0, 0), btVector3(0, 0, 1), btVector3(0, 1, 0), true);
+	dynamicsWorld->addConstraint(hinge);
+	
+	offset = glm::vec3(-14, -2, 0);
+	hinge = new btHingeConstraint(*beam->rigidBody, *beam2->rigidBody, GLToBtVector(offset), btVector3(0, +6, 0), btVector3(0, 1, 0), btVector3(0, 0, 1), true);
+	dynamicsWorld->addConstraint(hinge);
+	
+	offset = glm::vec3(0, -4, -(length / 2 + wheelOffset) + 1);
+	hinge = new btHingeConstraint(*beam2->rigidBody, *wheel->rigidBody, GLToBtVector(offset), btVector3(0, 0, 3), btVector3(0, 0, 1), btVector3(0, 1, 0), true);
+	dynamicsWorld->addConstraint(hinge);
+	
+	btTransform t5, t6;
+	t5.setIdentity();
+	t6.setIdentity();
+	t5.setOrigin(btVector3(2, 1, 1));
+	t6.setOrigin(btVector3(3, -5.2, 2));
+	btFixedConstraint * fixed3 = new btFixedConstraint(*chassis3->rigidBody, *chassis5->rigidBody, t5, t6);
+	dynamicsWorld->addConstraint(fixed3);
+	
+	offset = glm::vec3(0, -.5, 1.5);
+	wheel3 = CreateCylinder(2, 1, glm::vec3(position.x +3, position.y+10, position.z +4), q);
+	wheel3->transform->diffuse = glm::vec3(0.8, 0.0, 0.4);
+	hinge = new btHingeConstraint(*chassis5->rigidBody, *wheel3->rigidBody, GLToBtVector(offset), btVector3(0, 0, 0), btVector3(0, 0, 1), btVector3(0, 1, 0), true);
+	dynamicsWorld->addConstraint(hinge);
+	
+	offset = glm::vec3(7, -2, 0);
+	hinge = new btHingeConstraint(*beam->rigidBody, *beam3->rigidBody, GLToBtVector(offset), btVector3(0, -3, 0), btVector3(0, 1, 0), btVector3(0, 0, 1), true);
+	dynamicsWorld->addConstraint(hinge);
+
+	offset = glm::vec3(0, 2.5, -(length / 2 + wheelOffset - 1));
+	hinge = new btHingeConstraint(*beam3->rigidBody, *wheel3->rigidBody, GLToBtVector(offset), btVector3(0, 0, 2), btVector3(0, 0, 1), btVector3(0, 1, 0), true);
+	hinge->enableAngularMotor(true, 10, 10);
+	dynamicsWorld->addConstraint(hinge);
+	
+
+
+	return chassis3;
+}
 shared_ptr<PhysicsController> PhysicsFactory::CreateVehicle(glm::vec3 position)
 {
 	float width = 15;
@@ -440,3 +583,4 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateCapsuleRagdoll(glm::vec3 pos
 
 	return bodypart_spine;
 }
+

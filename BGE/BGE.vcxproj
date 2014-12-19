@@ -126,6 +126,7 @@
     <ClCompile Include="SceneGraphGame.cpp" />
     <ClCompile Include="SkeletonMapper.cpp" />
     <ClCompile Include="SnowEffect.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="SteeringGame.cpp" />
     <ClCompile Include="Transform.cpp" />

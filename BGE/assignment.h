@@ -12,11 +12,12 @@ namespace BGE
 	private:
 
 	public:
+		
+		shared_ptr<PhysicsController> CreateAnimat(glm::vec3 pos);
 		assignment(void);
 		~assignment(void);
 		bool Initialise();
 		void Update();
-		void Cleanup();
 		void CreateWall();
 	};
 }
